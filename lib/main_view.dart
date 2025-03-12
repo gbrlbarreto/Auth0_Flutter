@@ -30,12 +30,16 @@ class _MainViewState extends State<MainView> {
               onPressed: () async {
                 // Use a Universal Link callback URL on iOS 17.4+ / macOS 14.4+
                 // useHTTPS is ignored on Android
+
+                final credentials = await auth0.api.signup(email: 'gbrlbarreto7272@gmail.com', password: '123456', connection: '');
+                /*
                 final credentials =
                 await auth0.webAuthentication(scheme: 'auth0test').login(useHTTPS: true);
+                */
 
-                setState(() {
-                  _credentials = credentials;
-                });
+                // setState(() {
+                //   _credentials = credentials;
+                // });
               },
               child: const Text("Log in"))
         else
