@@ -31,12 +31,19 @@ class _MainViewState extends State<MainView> {
                 // Use a Universal Link callback URL on iOS 17.4+ / macOS 14.4+
                 // useHTTPS is ignored on Android
 
-                final credentials = await auth0.api.signup(email: 'gbrlbarreto7272@gmail.com', password: '123456', connection: '');
+                // final credentials = await auth0.api.signup(email: 'gbrlbarreto7272@gmail.com', password: '123456', connection: 'Username-Password-Authentication');
+                final result = await auth0.api.login(
+                  usernameOrEmail: 'gbrlbarreto7272@gmail.com',
+                  password: 'Ls19031996!',
+                  connectionOrRealm: 'Username-Password-Authentication', // Certifique-se de que esse nome está correto
+                  // audience: 'https://dev-3or80za1jx5523rh.us.auth0.com/', // Defina se necessário
+                  scopes: {'openid', 'profile', 'email', 'offline_access'},
+                );
                 /*
                 final credentials =
                 await auth0.webAuthentication(scheme: 'auth0test').login(useHTTPS: true);
                 */
-
+                print(result);
                 // setState(() {
                 //   _credentials = credentials;
                 // });
