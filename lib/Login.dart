@@ -45,6 +45,9 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (context) => Home()),
         );
+
+        accessToken = result.accessToken;
+
       } else {
         // Caso o login falhe, exiba uma mensagem de erro
         ScaffoldMessenger.of(context).showSnackBar(
