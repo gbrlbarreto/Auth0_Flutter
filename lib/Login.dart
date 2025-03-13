@@ -1,23 +1,30 @@
+import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:auth0test/Home.dart';
 import 'package:auth0test/model/Usuario.dart';
 import 'package:flutter/material.dart';
-import 'package:auth0_flutter/auth0_flutter.dart';
-import 'profile_view.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-
   Credentials? _credentials;
 
   late Auth0 auth0;
 
-  TextEditingController _controllerEmail = TextEditingController(text: 'gbrlbarreto7272@gmail.com');
-  TextEditingController _controllerSenha = TextEditingController(text: 'Ls19031996!');
+  final TextEditingController _controllerEmail =
+      TextEditingController(text: 'gbrlbarreto7272@gmail.com');
+  final TextEditingController _controllerSenha =
+      TextEditingController(text: 'Ls19031996!');
   bool isLoading = false;
+  String? idToken;
+  final String domain = 'dev-3or80za1jx5523rh.us.auth0.com';
+  final String clientId = '0EoobKJ7DtyWJA2a677hi9sLmfxtfmQJ';
+  final String redirectUri = 'com.example.app://login-callback';
 
   _logarUsuario() async {
     setState(() {
@@ -38,19 +45,13 @@ class _LoginState extends State<Login> {
         scopes: {'openid', 'profile', 'email', 'offline_access'},
       );
       print(result);
+      idToken = result.idToken;
 
       // Verifica se o login foi bem-sucedido
-      if (result != null && result.accessToken != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
-      } else {
-        // Caso o login falhe, exiba uma mensagem de erro
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao realizar login. Tente novamente.')),
-        );
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
     } catch (e) {
       print("Erro no login: $e");
       // Exibe uma mensagem de erro em caso de falha
@@ -60,10 +61,36 @@ class _LoginState extends State<Login> {
     });
   }
 
+  Future<void> logout() async {
+    if (idToken == null) {
+      print('ID Token não encontrado!');
+      return;
+    }
+
+    final String logoutUrl =
+        'https://$domain/oidc/logout?id_token_hint=$idToken&post_logout_redirect_uri=$redirectUri';
+
+    try {
+      final response = await http.get(Uri.parse(logoutUrl));
+
+      if (response.statusCode == 200) {
+        setState(() {
+          idToken = null;
+        });
+        print('Logout bem-sucedido!');
+      } else {
+        print('Erro ao fazer logout: ${response.body}');
+      }
+    } catch (e) {
+      print('Erro ao fazer logout: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    auth0 = Auth0('dev-3or80za1jx5523rh.us.auth0.com', '0EoobKJ7DtyWJA2a677hi9sLmfxtfmQJ');
+    auth0 = Auth0('dev-3or80za1jx5523rh.us.auth0.com',
+        '0EoobKJ7DtyWJA2a677hi9sLmfxtfmQJ');
   }
 
   @override
@@ -78,77 +105,79 @@ class _LoginState extends State<Login> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child: Container(  
-                  width: 300,  
-                  child: TextField(
-                    controller: _controllerEmail,
-                    //autofocus: true,
-                    keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(fontSize: 16), 
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 12),  
-                      hintText: "E-mail",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32)
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: SizedBox(
+                    width: 300,
+                    child: TextField(
+                      controller: _controllerEmail,
+                      //autofocus: true,
+                      keyboardType: TextInputType.emailAddress,
+                      style: TextStyle(fontSize: 16),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 12),
+                        hintText: "E-mail",
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32)),
                       ),
                     ),
                   ),
                 ),
-              ),
-                Container(  
-                width: 300,
-                child: TextField(
-                  controller: _controllerSenha,
-                  obscureText: true,
-                  keyboardType: TextInputType.text,
-                  style: TextStyle(fontSize: 16), 
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 12),  
-                    hintText: "Senha",
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32)
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                    controller: _controllerSenha,
+                    obscureText: true,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 16),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 12),
+                      hintText: "Senha",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32)),
                     ),
                   ),
                 ),
-              ),
                 Padding(
                   padding: EdgeInsets.only(top: 16, bottom: 10),
                   child: Center(
-                    child:
-                        isLoading
-                            ? CircularProgressIndicator()
-                            : ElevatedButton(
-                              child: Text(
-                                "Entrar",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
+                    child: isLoading
+                        ? CircularProgressIndicator()
+                        : ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all(
+                                Colors.green,
+                              ),
+                              padding: WidgetStateProperty.all(
+                                EdgeInsets.fromLTRB(32, 16, 32, 16),
+                              ),
+                              shape: WidgetStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32),
                                 ),
                               ),
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all(
-                                  Colors.green,
-                                ),
-                                padding: WidgetStateProperty.all(
-                                  EdgeInsets.fromLTRB(32, 16, 32, 16),
-                                ),
-                                shape: WidgetStateProperty.all(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(32),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                _logarUsuario();
-                              },
                             ),
+                            onPressed: () {
+                              _logarUsuario();
+                            },
+                            child: Text(
+                              "Entrar",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
+                ElevatedButton(
+                    onPressed: () {
+                      logout();
+                    },
+                    child: Text('Logout'))
               ],
             ),
           ),

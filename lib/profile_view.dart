@@ -2,7 +2,7 @@ import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter/material.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({Key? key, required this.user}) : super(key: key);
+  const ProfileView({super.key, required this.user});
 
   final UserProfile user;
 

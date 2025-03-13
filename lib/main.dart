@@ -1,4 +1,4 @@
-import 'package:auth0test/Login.dart';
+import 'package:auth0test/login.dart';
 import 'package:flutter/material.dart';
 
 void main() {
