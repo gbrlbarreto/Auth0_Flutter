@@ -17,8 +17,13 @@ class _LoginState extends State<Login> {
 
   TextEditingController _controllerEmail = TextEditingController(text: 'gbrlbarreto7272@gmail.com');
   TextEditingController _controllerSenha = TextEditingController(text: 'Ls19031996!');
+  bool isLoading = false;
 
   _logarUsuario() async {
+    setState(() {
+      isLoading = true;
+    });
+
     String email = _controllerEmail.text;
     String senha = _controllerSenha.text;
     Usuario usuario = Usuario();
@@ -36,7 +41,6 @@ class _LoginState extends State<Login> {
 
       // Verifica se o login foi bem-sucedido
       if (result != null && result.accessToken != null) {
-        // Redireciona para a tela Home
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Home()),
@@ -51,6 +55,9 @@ class _LoginState extends State<Login> {
       print("Erro no login: $e");
       // Exibe uma mensagem de erro em caso de falha
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -76,7 +83,7 @@ class _LoginState extends State<Login> {
                   width: 300,  
                   child: TextField(
                     controller: _controllerEmail,
-                    autofocus: true,
+                    //autofocus: true,
                     keyboardType: TextInputType.emailAddress,
                     style: TextStyle(fontSize: 16), 
                     decoration: InputDecoration(
@@ -111,21 +118,35 @@ class _LoginState extends State<Login> {
               ),
                 Padding(
                   padding: EdgeInsets.only(top: 16, bottom: 10),
-                  child: ElevatedButton(
-                    child: Text(
-                      "Entrar",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.green),
-                      padding: WidgetStateProperty.all(EdgeInsets.fromLTRB(32, 16, 32, 16)),
-                      shape: WidgetStateProperty.all(
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-                      ),
-                    ),
-                    onPressed: () {
-                      _logarUsuario();
-                    }, 
+                  child: Center(
+                    child:
+                        isLoading
+                            ? CircularProgressIndicator()
+                            : ElevatedButton(
+                              child: Text(
+                                "Entrar",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
+                              style: ButtonStyle(
+                                backgroundColor: WidgetStateProperty.all(
+                                  Colors.green,
+                                ),
+                                padding: WidgetStateProperty.all(
+                                  EdgeInsets.fromLTRB(32, 16, 32, 16),
+                                ),
+                                shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                _logarUsuario();
+                              },
+                            ),
                   ),
                 ),
               ],
