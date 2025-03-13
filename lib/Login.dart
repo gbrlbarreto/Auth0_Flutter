@@ -16,15 +16,15 @@ class _LoginState extends State<Login> {
 
   late Auth0 auth0;
 
-  final TextEditingController _controllerEmail =
-      TextEditingController(text: 'gbrlbarreto7272@gmail.com');
-  final TextEditingController _controllerSenha =
-      TextEditingController(text: 'Ls19031996!');
+  final TextEditingController _controllerEmail = TextEditingController(text: 'gbrlbarreto7272@gmail.com');
+  final TextEditingController _controllerSenha = TextEditingController(text: 'Ls19031996!');
   bool isLoading = false;
+
   String? idToken;
   final String domain = 'dev-3or80za1jx5523rh.us.auth0.com';
   final String clientId = '0EoobKJ7DtyWJA2a677hi9sLmfxtfmQJ';
-  final String redirectUri = 'com.example.app://login-callback';
+  // final String redirectUri = 'com.example.app://login-callback';
+  final String redirectUri = 'com.example.auth0test://login-callback';
 
   _logarUsuario() async {
     setState(() {
@@ -50,7 +50,7 @@ class _LoginState extends State<Login> {
       // Verifica se o login foi bem-sucedido
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Home()),
+        MaterialPageRoute(builder: (context) => Home(idToken: idToken)),
       );
     } catch (e) {
       print("Erro no login: $e");
@@ -89,8 +89,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    auth0 = Auth0('dev-3or80za1jx5523rh.us.auth0.com',
-        '0EoobKJ7DtyWJA2a677hi9sLmfxtfmQJ');
+    auth0 = Auth0('dev-3or80za1jx5523rh.us.auth0.com', '0EoobKJ7DtyWJA2a677hi9sLmfxtfmQJ');
   }
 
   @override
