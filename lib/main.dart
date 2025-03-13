@@ -1,9 +1,9 @@
-import 'package:auth0test/main_view.dart';
+import 'package:auth0test/Login.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: MainView(),
+    home: Login(),
     debugShowCheckedModeBanner: false,
   ));
 }
