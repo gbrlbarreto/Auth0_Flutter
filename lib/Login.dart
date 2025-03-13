@@ -72,15 +72,15 @@ class _LoginState extends State<Login> {
               children: <Widget>[
                 Padding(
                 padding: EdgeInsets.only(bottom: 8),
-                child: Container(  // Adicionado Container para controlar o tamanho do TextField
-                  width: 300,  // Definindo uma largura fixa para o TextField
+                child: Container(  
+                  width: 300,  
                   child: TextField(
                     controller: _controllerEmail,
                     autofocus: true,
                     keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(fontSize: 16),  // Diminui o tamanho da fonte
+                    style: TextStyle(fontSize: 16), 
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 12),  // Ajusta o padding interno
+                      contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 12),  
                       hintText: "E-mail",
                       filled: true,
                       fillColor: Colors.white,
@@ -91,15 +91,15 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-                Container(  // Adicionado Container para controlar o tamanho do TextField
-                width: 300,  // Definindo uma largura fixa para o TextField
+                Container(  
+                width: 300,
                 child: TextField(
                   controller: _controllerSenha,
                   obscureText: true,
                   keyboardType: TextInputType.text,
-                  style: TextStyle(fontSize: 16),  // Diminui o tamanho da fonte
+                  style: TextStyle(fontSize: 16), 
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 12),  // Ajusta o padding interno
+                    contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 12),  
                     hintText: "Senha",
                     filled: true,
                     fillColor: Colors.white,
